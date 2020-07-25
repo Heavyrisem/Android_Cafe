@@ -39,9 +39,14 @@ public class Kiosk extends JFrame {
         superpanel.add(p4);
 
         JLabel label = new JLabel("주문 하기를 눌러주세요.");
-        JLabel label1 = new JLabel();
+        JLabel input_label = new JLabel();
         
         JButton order_orderBtn = new JButton("주문하기");
+        order_orderBtn.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                label.setText("메뉴를 골라 주세요");
+            }
+        });
 
         ActionListener next_evnt = new ActionListener() {
             public void actionPerformed(ActionEvent e)
@@ -53,23 +58,23 @@ public class Kiosk extends JFrame {
         ActionListener add_num = new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
-                label.setText(label.getText() + e.getActionCommand());
+                input_label.setText(input_label.getText() + e.getActionCommand());
             }
         };
         ActionListener del_num = new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
-                if (label.getText().equals("")) {
+                if (input_label.getText().equals("")) {
                     return;
                 } else {
-                    label.setText(label.getText().substring(0, label.getText().length() - 1));
+                    input_label.setText(input_label.getText().substring(0, input_label.getText().length() - 1));
                 }
             }
         };
         ActionListener cls_num = new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
-                label.setText("");
+                input_label.setText("");
             }
         };
 
@@ -99,14 +104,15 @@ public class Kiosk extends JFrame {
         Coffee[] menus = twosomeplace.getMenus();
         JButton[] menus_btns = new JButton[menus.length];
         for (int i = 0; i < menus.length; i++) {
-            menus_btns[i] = new JButton(menus[i].getName() + "\n" + menus[i].getPrice());
+            menus_btns[i] = new JButton("<html><p>" + menus[i].getName() + "<br>" + menus[i].getPrice() + "</p></html>");
+            menus_btns[i].setPreferredSize(new Dimension((int)width/4, (int)(height*0.7*0.2)));
             menus_btns[i].setActionCommand(i+"");
             menus_btns[i].addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e)
                 {
                     int menu_idx = Integer.parseInt(e.getActionCommand());
                     if (twosomeplace.select(menus[menu_idx])) {
-                        label.setText(menus[menu_idx].getName() + "의 가격은 " + menus[menu_idx].getPrice() + "원 입니다");
+                        label.setText("<html><p>" + menus[menu_idx].getName() + "의 가격은" + menus[menu_idx].getPrice() + "원 입니다<br></p></html>");
                         CardLayout cardLayout = (CardLayout) superpanel.getLayout();
                         cardLayout.next(superpanel);
                     }
@@ -115,16 +121,22 @@ public class Kiosk extends JFrame {
             menu_panel.add(menus_btns[i]);
         }
         
+        for (int i = menus.length; i <4*3; i++){
+            menu_panel.add(new JLabel());
+        }
+
         frame.setLayout(new BorderLayout());
         number_panel.setLayout(new GridLayout(4, 3));
-        menu_panel.setLayout(new GridLayout(menus.length%4, 3));
+        menu_panel.setLayout(new GridLayout(4, 3));
         
-        North_panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        // North_panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        North_panel.setLayout(new BoxLayout(North_panel, BoxLayout.Y_AXIS));
         North_panel.setPreferredSize(new Dimension(300, 200));
         
  
  
-        North_panel.add(label, BorderLayout.NORTH);
+        North_panel.add(label);
+        North_panel.add(input_label);
 
         p1.add(order_orderBtn);
  
